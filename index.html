@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#2563eb">
+<meta name="description" content="TaskFlow — your personal task and deadline manager.">
+<title>TaskFlow | Your personal planner</title>
+
+<style>
+:root {
+  --blue: #2563eb;
+  --bg: #f5f7fc;
+  --ink: #21314e;
+  --muted: #7a879d;
+  --line: #e7ecf4;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+
+button:focus-visible, a:focus-visible {
+  outline: 3px solid #93b4ff;
+  outline-offset: 3px;
+}
+
+button:hover { filter: brightness(.96); }
+
+.topbar {
+  background: white;
+  border-bottom: 1px solid var(--line);
+}
+
+.topbar-inner {
+  max-width: 1120px;
+  margin: auto;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand {
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  background: var(--blue);
+  color: white;
+  border-radius: 10px;
+}
+
+.saved { color: var(--muted); font-size: 12px; }
+.saved::before { content: "●"; color: #28a17c; margin-right: 7px; }
+
+main {
+  max-width: 1120px;
+  margin: auto;
+  padding: 38px 24px 25px;
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+
+h1 {
+  font-size: clamp(25px, 4vw, 36px);
+  letter-spacing: -1.2px;
+  margin: 0;
+}
+
+h1 span { color: var(--blue); }
+
+.subtitle {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--muted);
+  margin: 10px 0 0;
+}
+
+.primary, .secondary, .danger {
+  border: 0;
+  border-radius: 9px;
+  min-height: 43px;
+  padding: 11px 17px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.primary { color: white; background: var(--blue); }
+.secondary { color: #63728a; background: #eef2f8; }
+.danger { color: white; background: #cb3845; }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 27px;
+}
+
+.stat {
+  border: 1px solid var(--line);
+  background: white;
+  border-radius: 13px;
+  padding: 20px;
+}
+
+.stat-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.stat-icon {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: #eef3ff;
+  color: var(--blue);
+}
+
+.stat strong {
+  display: block;
+  font-size: 32px;
+  margin: 9px 0 5px;
+  letter-spacing: -1px;
+}
+
+.stat small { color: #94a0b2; font-size: 11px; }
+
+.amber { color: #ba8c27; background: #fff7e4; }
+.red { color: #ca5d64; background: #fff0ef; }
+.green { color: #218b69; background: #eaf8f1; }
+
+.panel {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  overflow: hidden;
+}
+
+.panel-head {
+  padding: 23px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+h2 { margin: 0; font-size: 18px; letter-spacing: -.4px; }
+
+.panel-head p {
+  margin: 7px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.backup-buttons { display: flex; gap: 6px; }
+
+.text-button {
+  background: white;
+  border: 1px solid var(--line);
+  color: #738199;
+  padding: 9px 11px;
+  border-radius: 7px;
+  font-size: 11px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 0 23px 20px;
+}
+
+.tabs {
+  display: flex;
+  gap: 3px;
+  background: #f3f5f9;
+  padding: 4px;
+  border-radius: 8px;
+}
+
+.tab {
+  border: 0;
+  background: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: #8390a5;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.tab.active {
+  background: white;
+  color: var(--blue);
+  box-shadow: 0 1px 5px #20304912;
+  font-weight: 600;
+}
+
+.search-sort { display: flex; gap: 8px; }
+
+input, select, textarea {
+  border: 1px solid #dfe6f0;
+  border-radius: 8px;
+  padding: 11px;
+  color: var(--ink);
+  background: white;
+  min-width: 0;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid #b8d1ff;
+  border-color: #8baff4;
+}
+
+.search-sort input { width: 180px; font-size: 12px; }
+.search-sort select { font-size: 12px; }
+
+.table-head, .task-row {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) 130px 85px 95px 65px;
+  align-items: center;
+  gap: 12px;
+  padding: 0 23px;
+}
+
+.table-head {
+  min-height: 40px;
+  background: #fafbfd;
+  border-block: 1px solid var(--line);
+  color: #98a3b5;
+  font-size: 10px;
+  letter-spacing: .7px;
+}
+
+.task-row {
+  min-height: 82px;
+  border-bottom: 1px solid #f0f3f8;
+}
+
+.task-name {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.check {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: var(--blue);
+  cursor: pointer;
+}
+
+.task-title {
+  background: none;
+  border: 0;
+  padding: 10px 0;
+  text-align: left;
+  min-width: 0;
+  flex: 1;
+  color: var(--ink);
+}
+
+.task-title strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.task-title small {
+  display: block;
+  font-size: 11px;
+  color: #929eb0;
+  margin-top: 5px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.done .task-title strong {
+  text-decoration: line-through;
+  color: #98a4b6;
+}
+
+.due { font-size: 12px; color: #8290a6; }
+.late { color: #c05d65; }
+
+.badge {
+  font-size: 10px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  justify-self: start;
+  white-space: nowrap;
+}
+
+.high, .overdue { background: #fff0ef; color: #c66a65; }
+.medium, .pending { background: #fff8e7; color: #b38b32; }
+.low { background: #edf4ff; color: #5a81ba; }
+.completed { background: #eaf8f1; color: #348d6e; }
+
+.row-actions { display: flex; }
+
+.icon-button {
+  border: 0;
+  background: none;
+  border-radius: 6px;
+  color: #8997ac;
+  padding: 8px;
+  min-width: 32px;
+  min-height: 36px;
+}
+
+.icon-button:hover { background: #f0f4fa; }
+
+.empty {
+  text-align: center;
+  padding: 52px 20px 58px;
+}
+
+.empty-icon {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 20px;
+  border-radius: 20px;
+  color: #6089df;
+  background: #edf3ff;
+  font-size: 30px;
+}
+
+.empty h3 { font-size: 18px; margin: 0; }
+.empty p { color: #929eb0; font-size: 13px; line-height: 1.8; }
+
+.panel-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  background: #fdfdff;
+  padding: 15px 23px;
+  font-size: 11px;
+  color: #98a4b5;
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 20px;
+  color: #929eb1;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+dialog {
+  width: min(480px, calc(100% - 28px));
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 25px;
+  color: var(--ink);
+  max-height: 90dvh;
+  overflow-y: auto;
+  box-shadow: 0 20px 80px #172a4930;
+}
+
+dialog::backdrop {
+  background: #16243d66;
+  backdrop-filter: blur(3px);
+}
+
+.dialog-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.dialog-head h2 { font-size: 24px; }
+
+form label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 17px;
+}
+
+form input, form select, form textarea {
+  display: block;
+  width: 100%;
+  margin-top: 7px;
+  font-size: 14px;
+}
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+textarea { resize: vertical; }
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.error { font-size: 12px; color: #b42318; }
+.delete-name { overflow-wrap: anywhere; }
+
+.warning {
+  background: #fff4df;
+  color: #94651b;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+#toast {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 90%;
+  padding: 13px 20px;
+  border-radius: 10px;
+  background: #21314e;
+  color: white;
+  font-size: 12px;
+  text-align: center;
+  z-index: 10;
+}
+
+[hidden] { display: none !important; }
+
+@media (max-width: 800px) {
+  .table-head, .task-row {
+    grid-template-columns: minmax(120px, 1fr) 100px 75px 85px 65px;
+    gap: 6px;
+    padding-inline: 16px;
+  }
+
+  .controls { padding-inline: 16px; }
+  .stat { padding: 16px; }
+}
+
+@media (max-width: 600px) {
+  main { padding: 25px 15px; }
+  .topbar-inner { padding: 16px; }
+  .saved { font-size: 10px; }
+  .heading { flex-wrap: wrap; gap: 18px; }
+  .heading > .primary { width: 100%; }
+  .stats { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat { padding: 16px; }
+  .stat strong { font-size: 29px; }
+  .stat small { font-size: 10px; }
+  .panel-head { padding: 19px 15px; align-items: flex-start; }
+  .panel-head p { max-width: 170px; line-height: 1.6; font-size: 11px; }
+  .backup-buttons { flex-direction: column; }
+  .text-button { font-size: 10px; padding: 7px 9px; }
+  .tabs { width: 100%; justify-content: space-between; }
+  .tab { flex: 1; font-size: 11px; padding: 9px 7px; }
+  .search-sort { width: 100%; }
+  .search-sort input { flex: 1; width: 100%; }
+  .search-sort select { max-width: 120px; }
+  .table-head { display: none; }
+
+  .task-row {
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    padding: 15px;
+  }
+
+  .task-name { grid-column: 1; grid-row: 1; }
+  .task-title { padding: 0; }
+  .task-title small { max-width: 180px; }
+  .due { grid-column: 1; grid-row: 2; padding-left: 30px; font-size: 11px; }
+  .priority-badge { grid-column: 1; grid-row: 3; margin-left: 30px; }
+  .status-badge { grid-column: 2; grid-row: 2; justify-self: end; }
+  .row-actions { grid-column: 2; grid-row: 1; }
+  .panel-footer { padding: 14px 15px; }
+  .panel-footer span:last-child { display: none; }
+  footer { flex-direction: column; gap: 4px; font-size: 10px; }
+  .empty { padding: 35px 15px 40px; }
+}
+</style>
+</head>
+
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="logo">✓</span> TaskFlow</div>
+    <span class="saved">Saved in this browser</span>
+  </div>
+</header>
+
+<main>
+  <section class="heading">
+    <div>
+      <p class="eyebrow" id="dateLabel"></p>
+      <h1>A clearer day starts here<span>.</span></h1>
+      <p class="subtitle">Make a plan, find your focus, and take it one task at a time.</p>
+    </div>
+    <button class="primary" id="newTask">＋ New task</button>
+  </section>
+
+  <section class="stats" aria-label="Task summary">
+    <article class="stat">
+      <div class="stat-top">Total tasks <span class="stat-icon">▤</span></div>
+      <strong id="totalCount">0</strong>
+      <small>Everything on your list</small>
+    </article>
+    <article class="stat">
+      <div class="stat-top">Pending <span class="stat-icon amber">◷</span></div>
+      <strong id="pendingCount">0</strong>
+      <small>A little progress awaits</small>
+    </article>
+    <article class="stat">
+      <div class="stat-top">Overdue <span class="stat-icon red">⚑</span></div>
+      <strong id="overdueCount">0</strong>
+      <small>Time for a little attention</small>
+    </article>
+    <article class="stat">
+      <div class="stat-top">Completed <span class="stat-icon green">✓</span></div>
+      <strong id="completedCount">0</strong>
+      <small>Every finish counts</small>
+    </article>
+  </section>
+
+  <section class="panel" aria-label="Your tasks">
+    <div class="panel-head">
+      <div>
+        <h2>Your tasks</h2>
+        <p>A place for everything you want to get done.</p>
+      </div>
+      <div class="backup-buttons">
+        <button class="text-button" id="exportTasks">↓ Export backup</button>
+        <button class="text-button" id="importTasks">↑ Import backup</button>
+        <input id="importFile" type="file" accept=".json,application/json" hidden>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="tabs" role="group" aria-label="Filter tasks">
+        <button class="tab active" data-filter="All" aria-pressed="true">All tasks</button>
+        <button class="tab" data-filter="Pending" aria-pressed="false">Pending</button>
+        <button class="tab" data-filter="Overdue" aria-pressed="false">Overdue</button>
+        <button class="tab" data-filter="Completed" aria-pressed="false">Completed</button>
+      </div>
+      <div class="search-sort">
+        <input id="search" type="search" placeholder="Search tasks…" aria-label="Search titles and notes">
+        <select id="sort" aria-label="Sort tasks">
+          <option value="deadline">Deadline ↑</option>
+          <option value="priority">Priority</option>
+          <option value="newest">Newest first</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-head" aria-hidden="true">
+      <span>TASK NAME</span><span>DUE DATE</span><span>PRIORITY</span><span>STATUS</span><span></span>
+    </div>
+
+    <div id="taskList"></div>
+
+    <div class="empty" id="empty">
+      <div class="empty-icon">✓</div>
+      <h3 id="emptyTitle">A fresh start, a little focus.</h3>
+      <p id="emptyText">Add your first task and take it from there.</p>
+      <button class="primary" id="emptyNew">＋ New task</button>
+    </div>
+
+    <div class="panel-footer">
+      <span id="listInfo">0 tasks</span>
+      <span>Tap a task name to view notes or edit.</span>
+    </div>
+  </section>
+
+  <footer>
+    <span>✓ Your tasks, your space.</span>
+    <span>Tasks stay in this browser. Export a backup before clearing browser data.</span>
+  </footer>
+
+  <p class="warning" id="storageWarning" hidden>
+    Browser storage is unavailable or could not be read. Export a backup before closing this page.
+  </p>
+</main>
+
+<dialog id="editor">
+  <form id="taskForm">
+    <div class="dialog-head">
+      <div>
+        <p class="eyebrow">MAKE ROOM FOR PROGRESS</p>
+        <h2 id="editorTitle">A new little goal.</h2>
+      </div>
+      <button class="icon-button" id="closeEditor" type="button" aria-label="Close editor">✕</button>
+    </div>
+
+    <label>Task title
+      <input id="title" maxlength="200" placeholder="What would you like to get done?" required>
+    </label>
+
+    <div class="form-row">
+      <label>Due date
+        <input id="due" type="date" required>
+      </label>
+      <label>Priority
+        <select id="priority">
+          <option>Low</option>
+          <option selected>Medium</option>
+          <option>High</option>
+        </select>
+      </label>
+    </div>
+
+    <label>Notes (optional)
+      <textarea id="notes" rows="4" placeholder="A few details, a helpful reminder…"></textarea>
+    </label>
+
+    <p class="error" id="formError" role="alert"></p>
+
+    <div class="dialog-actions">
+      <button class="secondary" id="cancelEditor" type="button">Cancel</button>
+      <button class="primary" type="submit">Save task</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="deleteDialog">
+  <h2>Delete this task?</h2>
+  <p class="delete-name" id="deleteName"></p>
+  <p class="subtitle">This cannot be undone.</p>
+  <div class="dialog-actions">
+    <button class="secondary" id="cancelDelete">Keep task</button>
+    <button class="danger" id="confirmDelete">Delete task</button>
+  </div>
+</dialog>
+
+<div id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+const STORAGE_KEY = "taskflow.tasks.v1";
+
+let tasks = [];
+let activeFilter = "All";
+let editingId = null;
+let deletingId = null;
+let toastTimer;
+let storageReadable = true;
+
+function today() {
+  const d = new Date();
+  return [
+    d.getFullYear(),
+    String(d.getMonth() + 1).padStart(2, "0"),
+    String(d.getDate()).padStart(2, "0")
+  ].join("-");
+}
+
+function validDate(value) {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return false;
+  }
+  const d = new Date(value + "T12:00:00");
+  return Number.isFinite(d.getTime()) &&
+    d.getFullYear() === Number(value.slice(0, 4)) &&
+    d.getMonth() + 1 === Number(value.slice(5, 7)) &&
+    d.getDate() === Number(value.slice(8, 10));
+}
+
+function validTask(task) {
+  return task &&
+    typeof task.id === "string" &&
+    typeof task.title === "string" &&
+    task.title.trim().length > 0 &&
+    task.title.length <= 200 &&
+    typeof task.notes === "string" &&
+    validDate(task.due) &&
+    ["High", "Medium", "Low"].includes(task.priority) &&
+    typeof task.completed === "boolean";
+}
+
+try {
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+  if (!Array.isArray(saved) || !saved.every(validTask)) {
+    throw new Error("Invalid saved tasks");
+  }
+  const ids = new Set(saved.map(task => task.id));
+  if (ids.size !== saved.length) throw new Error("Duplicate task IDs");
+  tasks = saved;
+} catch (error) {
+  storageReadable = false;
+  $("storageWarning").hidden = false;
+}
+
+function taskStatus(task) {
+  if (task.completed) return "Completed";
+  return task.due < today() ? "Overdue" : "Pending";
+}
+
+function notify(message) {
+  $("toast").textContent = message;
+  $("toast").hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    $("toast").hidden = true;
+  }, 3500);
+}
+
+function persist() {
+  try {
+    if (!storageReadable) {
+      throw new Error("Storage could not be read safely");
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    return true;
+  } catch (error) {
+    $("storageWarning").hidden = false;
+    return false;
+  }
+}
+
+function saveAndRender(message) {
+  const saved = persist();
+  render();
+  notify(saved ? message : "Changes are temporary. Export a backup before leaving.");
+}
+
+function makeElement(tag, className, text) {
+  const element = document.createElement(tag);
+  if (className) element.className = className;
+  if (text !== undefined) element.textContent = text;
+  return element;
+}
+
+function readableDate(value) {
+  if (value === today()) return "Today";
+  return new Date(value + "T12:00:00").toLocaleDateString(
+    undefined,
+    { month: "short", day: "numeric", year: "numeric" }
+  );
+}
+
+function render() {
+  const counts = { Pending: 0, Overdue: 0, Completed: 0 };
+
+  tasks.forEach(task => counts[taskStatus(task)]++);
+
+  $("totalCount").textContent = tasks.length;
+  $("pendingCount").textContent = counts.Pending;
+  $("overdueCount").textContent = counts.Overdue;
+  $("completedCount").textContent = counts.Completed;
+
+  $("dateLabel").textContent = new Date().toLocaleDateString(
+    undefined,
+    { weekday: "long", month: "long", day: "numeric", year: "numeric" }
+  ).toUpperCase();
+
+  document.querySelectorAll("[data-filter]").forEach(button => {
+    const active = button.dataset.filter === activeFilter;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+
+  const query = $("search").value.trim().toLowerCase();
+
+  const visible = tasks.filter(task => {
+    const matchesFilter =
+      activeFilter === "All" || taskStatus(task) === activeFilter;
+    const matchesSearch =
+      (task.title + " " + task.notes).toLowerCase().includes(query);
+    return matchesFilter && matchesSearch;
+  });
+
+  const ranks = { High: 0, Medium: 1, Low: 2 };
+  const created = task =>
+    Number.isFinite(task.created) ? task.created : 0;
+
+  visible.sort((a, b) => {
+    if ($("sort").value === "newest") {
+      return created(b) - created(a);
+    }
+
+    const completion = Number(a.completed) - Number(b.completed);
+    if (completion) return completion;
+
+    if ($("sort").value === "priority") {
+      const priority = ranks[a.priority] - ranks[b.priority];
+      if (priority) return priority;
+    }
+
+    return a.due.localeCompare(b.due) || created(a) - created(b);
+  });
+
+  $("taskList").replaceChildren();
+
+  visible.forEach(task => {
+    const state = taskStatus(task);
+    const row = makeElement(
+      "div",
+      "task-row" + (task.completed ? " done" : "")
+    );
+
+    const name = makeElement("div", "task-name");
+    const checkbox = makeElement("input", "check");
+    checkbox.type = "checkbox";
+    checkbox.checked = task.completed;
+    checkbox.setAttribute(
+      "aria-label",
+      (task.completed ? "Reopen " : "Complete ") + task.title
+    );
+
+    checkbox.addEventListener("change", () => {
+      task.completed = checkbox.checked;
+      saveAndRender(
+        task.completed ? "A little win. Task completed!" : "Task reopened."
+      );
+    });
+
+    const title = makeElement("button", "task-title");
+    title.type = "button";
+    title.append(makeElement("strong", "", task.title));
+
+    if (task.notes) {
+      title.append(
+        makeElement("small", "", task.notes.replace(/\n/g, " "))
+      );
+    }
+
+    title.addEventListener("click", () => openEditor(task));
+    name.append(checkbox, title);
+
+    const due = makeElement(
+      "span",
+      "due" + (state === "Overdue" ? " late" : ""),
+      readableDate(task.due)
+    );
+
+    const priority = makeElement(
+      "span",
+      "badge priority-badge " + task.priority.toLowerCase(),
+      task.priority
+    );
+
+    const status = makeElement(
+      "span",
+      "badge status-badge " + state.toLowerCase(),
+      state
+    );
+
+    const actions = makeElement("div", "row-actions");
+
+    const edit = makeElement("button", "icon-button", "✎");
+    edit.title = "Edit task";
+    edit.setAttribute("aria-label", "Edit " + task.title);
+    edit.addEventListener("click", () => openEditor(task));
+
+    const remove = makeElement("button", "icon-button", "×");
+    remove.title = "Delete task";
+    remove.setAttribute("aria-label", "Delete " + task.title);
+    remove.addEventListener("click", () => {
+      deletingId = task.id;
+      $("deleteName").textContent = task.title;
+      $("deleteDialog").showModal();
+    });
+
+    actions.append(edit, remove);
+    row.append(name, due, priority, status, actions);
+    $("taskList").append(row);
+  });
+
+  $("empty").hidden = visible.length > 0;
+  $("emptyTitle").textContent = tasks.length
+    ? "A little breathing room."
+    : "A fresh start, a little focus.";
+
+  $("emptyText").textContent = tasks.length
+    ? "No matching tasks. Try another search or status."
+    : "Add your first task and take it from there.";
+
+  $("listInfo").textContent =
+    `${visible.length} of ${tasks.length} task${tasks.length === 1 ? "" : "s"}`;
+}
+
+function openEditor(task = null) {
+  editingId = task ? task.id : null;
+  $("taskForm").reset();
+
+  $("title").value = task ? task.title : "";
+  $("due").value = task ? task.due : today();
+  $("priority").value = task ? task.priority : "Medium";
+  $("notes").value = task ? task.notes : "";
+  $("formError").textContent = "";
+  $("editorTitle").textContent = task
+    ? "A little fine-tuning."
+    : "A new little goal.";
+
+  $("editor").showModal();
+  $("title").focus();
+}
+
+$("taskForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const title = $("title").value.trim();
+  const due = $("due").value;
+
+  if (!title) {
+    $("formError").textContent = "Please give your task a title.";
+    return;
+  }
+
+  if (!validDate(due)) {
+    $("formError").textContent = "Please choose a valid due date.";
+    return;
+  }
+
+  const values = {
+    title,
+    due,
+    priority: $("priority").value,
+    notes: $("notes").value.trim()
+  };
+
+  if (editingId) {
+    const task = tasks.find(item => item.id === editingId);
+
+    if (!task) {
+      $("formError").textContent =
+        "This task no longer exists. Close the editor and try again.";
+      return;
+    }
+
+    Object.assign(task, values);
+  } else {
+    tasks.push({
+      ...values,
+      id: crypto.randomUUID(),
+      completed: false,
+      created: Date.now()
+    });
+  }
+
+  $("editor").close();
+  saveAndRender(editingId ? "Changes saved." : "Task added. One step closer.");
+});
+
+$("newTask").addEventListener("click", () => openEditor());
+$("emptyNew").addEventListener("click", () => openEditor());
+
+$("closeEditor").addEventListener("click", () => $("editor").close());
+$("cancelEditor").addEventListener("click", () => $("editor").close());
+
+$("cancelDelete").addEventListener(
+  "click",
+  () => $("deleteDialog").close()
+);
+
+$("confirmDelete").addEventListener("click", () => {
+  tasks = tasks.filter(task => task.id !== deletingId);
+  $("deleteDialog").close();
+  saveAndRender("Task deleted.");
+});
+
+document.querySelectorAll("[data-filter]").forEach(button => {
+  button.addEventListener("click", () => {
+    activeFilter = button.dataset.filter;
+    render();
+  });
+});
+
+$("search").addEventListener("input", render);
+$("sort").addEventListener("change", render);
+
+$("exportTasks").addEventListener("click", () => {
+  const backup = {
+    app: "TaskFlow",
+    exportedAt: new Date().toISOString(),
+    tasks
+  };
+
+  const blob = new Blob(
+    [JSON.stringify(backup, null, 2)],
+    { type: "application/json" }
+  );
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `taskflow-backup-${today()}.json`;
+  document.body.append(link);
+  link.click();
+  link.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  notify("Task backup downloaded.");
+});
+
+$("importTasks").addEventListener("click", () => $("importFile").click());
+
+$("importFile").addEventListener("change", async event => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  try {
+    if (file.size > 5 * 1024 * 1024) {
+      throw new Error("Please choose a backup smaller than 5 MB.");
+    }
+
+    const backup = JSON.parse(await file.text());
+
+    if (
+      !backup ||
+      backup.app !== "TaskFlow" ||
+      !Array.isArray(backup.tasks) ||
+      !backup.tasks.every(validTask)
+    ) {
+      throw new Error("This file is not a valid TaskFlow backup.");
+    }
+
+    if (!backup.tasks.length) {
+      notify("This backup has no tasks.");
+      return;
+    }
+
+    if (!confirm(
+      `Import ${backup.tasks.length} task(s)? They will be added to your current list.`
+    )) {
+      return;
+    }
+
+    const ids = new Set(tasks.map(task => task.id));
+    let added = 0;
+
+    backup.tasks.forEach(task => {
+      if (ids.has(task.id)) return;
+
+      tasks.push({
+        id: task.id,
+        title: task.title,
+        notes: task.notes,
+        due: task.due,
+        priority: task.priority,
+        completed: task.completed,
+        created: Number.isFinite(task.created) ? task.created : Date.now()
+      });
+
+      ids.add(task.id);
+      added++;
+    });
+
+    saveAndRender(`${added} task(s) imported.`);
+  } catch (error) {
+    alert(error instanceof SyntaxError
+      ? "Please choose a valid TaskFlow JSON backup."
+      : error.message);
+  } finally {
+    event.target.value = "";
+  }
+});
+
+window.addEventListener("storage", event => {
+  if (event.key !== STORAGE_KEY) return;
+
+  try {
+    const updated = JSON.parse(event.newValue || "[]");
+
+    if (!Array.isArray(updated) || !updated.every(validTask)) {
+      throw new Error("Invalid saved tasks");
+    }
+
+    if (new Set(updated.map(task => task.id)).size !== updated.length) {
+      throw new Error("Duplicate task IDs");
+    }
+
+    tasks = updated;
+    storageReadable = true;
+    render();
+  } catch (error) {
+    storageReadable = false;
+    $("storageWarning").hidden = false;
+    notify("Could not read saved tasks. Export a backup before leaving.");
+  }
+});
+
+render();
+setInterval(render, 60000);
+</script>
+</body>
+</html>
